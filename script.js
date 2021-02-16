@@ -8,7 +8,7 @@ let Application = PIXI.Application,
 
 //Create a Pixi Application
 let app = new Application({ 
-	width: 800, 
+	width: 1024, 
     height: 600,                       
     antialiasing: true, 
     transparent: false, 
@@ -20,21 +20,24 @@ let app = new Application({
 document.body.appendChild(app.view);
 
 loader
-  .add("cat.png")
+  .add("car.png")
   .load(setup);
 
 //Define any variables that are used in more than one function
-var cat, state;
+var car, state;
 
 function setup() {
 
-	//Create the `cat` sprite 
-  	cat = new Sprite(resources["cat.png"].texture);
-  	cat.x = 400;
-  	cat.y = 200; 
-  	cat.vx = 0;
-  	cat.vy = 0;
-  	app.stage.addChild(cat);
+	//Create the car sprite 
+  	car = new Sprite(resources["car.png"].texture);
+  	car.x = 640;
+  	car.y = 200; 
+  	car.vx = 0;
+  	car.vy = 0;
+  	car.anchor.x = 0.5;
+  	car.anchor.y = 0.5;
+ 
+  	app.stage.addChild(car);
 
   	//Capture the keyboard arrow keys
   	let left = keyboard(37),
@@ -44,52 +47,52 @@ function setup() {
 
   	//Left arrow key `press` method
   	left.press = () => {
-     	cat.vx -= 1;
-    	cat.vy += 0;
+     	car.vx -= 1;
+    	car.vy += 0;
 	};
   
   	//Left arrow key `release` method
   	left.release = () => {
-  		if (!right.isDown && cat.vy === 0) {
-    		cat.vx += 0;
+  		if (!right.isDown && car.vy === 0) {
+    		car.vx += 0;
     	}
   	};
 
   	//Up
   	up.press = () => {
-   	 cat.vy -= 1;
+   	 car.vy -= 1;
   	};
   	up.release = () => {
-    	if (!down.isDown && cat.vx === 0) {
-      		cat.vy += 0;
+    	if (!down.isDown && car.vx === 0) {
+      		car.vy += 0;
     	}
   	};
 
   //Right
   right.press = () => {
-    cat.vx += 1;
+    car.vx += 1;
   };
   right.release = () => {
-    if (!left.isDown && cat.vy === 0) {
-      cat.vx += 0;
+    if (!left.isDown && car.vy === 0) {
+      car.vx += 0;
     }
   };
 
   //Down
   down.press = () => {
-    cat.vy += 1;
+    car.vy += 1;
   };
   down.release = () => {
-    if (!up.isDown && cat.vx === 0) {
-      cat.vy += 0;
+    if (!up.isDown && car.vx === 0) {
+      car.vy += 0;
     }
   };
 
-  //Set the game state
-  state = play;
+  	//Set the game state
+  	state = play;
  
-  //Start the game loop 
-  app.ticker.add(delta => gameLoop(delta));
+  	//Start the game loop 
+	app.ticker.add(delta => gameLoop(delta));
 }
 
 function gameLoop(delta){
@@ -101,8 +104,9 @@ function gameLoop(delta){
 function play(delta) {
 
   //Use the cat's velocity to make it move
-  cat.x += cat.vx;
-  cat.y += cat.vy;
+  car.angle = ( Math.atan2(car.vx, -car.vy) / Math.PI ) * 180;
+  car.x += car.vx;
+  car.y += car.vy;
 }
 
 //The `keyboard` helper function
