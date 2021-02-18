@@ -1,3 +1,5 @@
+
+
 //Aliases
 let Application = PIXI.Application,
     Container = PIXI.Container,
@@ -19,6 +21,7 @@ let app = new Application({
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
+
 loader
   .add("car.png")
   .load(setup);
@@ -26,8 +29,23 @@ loader
 //Define any variables that are used in more than one function
 var car, state;
 
-function setup() {
+//set up viewport object
 
+const viewport = new Viewport.Viewport( {
+	screenWidth: window.innerWidth,
+	screenHeight: window.innerHeight,
+	worldWidth: 2000,
+	worldHeight: 2000
+});
+
+app.stage.addChild(viewport);
+
+viewport
+	.drag()
+	.pinch()
+	.wheel();
+
+function setup() {
 	//Create the car sprite 
   	car = new Sprite(resources["car.png"].texture);
   	car.x = 640;
@@ -37,7 +55,9 @@ function setup() {
   	car.anchor.x = 0.5;
   	car.anchor.y = 0.5;
  
-  	app.stage.addChild(car);
+  	// app.stage.addChild(car);
+  	 viewport.addChild(car);
+  	 viewport.moveCenter(620, 200);
 
   	//Capture the keyboard arrow keys
   	let left = keyboard(37),
@@ -68,25 +88,25 @@ function setup() {
     	}
   	};
 
-  //Right
-  right.press = () => {
-    car.vx += 1;
-  };
-  right.release = () => {
-    if (!left.isDown && car.vy === 0) {
-      car.vx += 0;
-    }
-  };
+  	//Right
+  	right.press = () => {
+    	car.vx += 1;
+  	};
+  	right.release = () => {
+    	if (!left.isDown && car.vy === 0) {
+      	car.vx += 0;
+    	}
+  	};
 
-  //Down
-  down.press = () => {
-    car.vy += 1;
-  };
-  down.release = () => {
-    if (!up.isDown && car.vx === 0) {
-      car.vy += 0;
-    }
-  };
+  	//Down
+  	down.press = () => {
+    	car.vy += 1;
+  	};
+  	down.release = () => {
+    	if (!up.isDown && car.vx === 0) {
+      		car.vy += 0;
+    	}
+  	};
 
   	//Set the game state
   	state = play;
@@ -107,6 +127,7 @@ function play(delta) {
   car.angle = ( Math.atan2(car.vx, -car.vy) / Math.PI ) * 180;
   car.x += car.vx;
   car.y += car.vy;
+
 }
 
 //The `keyboard` helper function
