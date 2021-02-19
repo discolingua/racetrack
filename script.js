@@ -6,6 +6,7 @@ let Application = PIXI.Application,
     loader = PIXI.Loader.shared,
     resources = PIXI.Loader.shared.resources,
     TextureCache = PIXI.utils.TextureCache,
+    TilingSprite = PIXI.TilingSprite,
     Sprite = PIXI.Sprite;
 
 //Create a Pixi Application
@@ -23,7 +24,8 @@ document.body.appendChild(app.view);
 
 
 loader
-  .add("car.png")
+  .add("car", "assets/images/car.png")
+  .add("sand", "assets/images/sand.png")
   .load(setup);
 
 //Define any variables that are used in more than one function
@@ -46,8 +48,12 @@ viewport
 	.wheel();
 
 function setup() {
+
+	sand = new TilingSprite(resources.sand.texture, 12800, 12800);
+	viewport.addChild(sand);
+
 	//Create the car sprite 
-  	car = new Sprite(resources["car.png"].texture);
+  	car = new Sprite(resources.car.texture);
   	car.x = 640;
   	car.y = 200; 
   	car.vx = 0;
@@ -55,9 +61,8 @@ function setup() {
   	car.anchor.x = 0.5;
   	car.anchor.y = 0.5;
  
-  	// app.stage.addChild(car);
-  	 viewport.addChild(car);
-  	 viewport.moveCenter(620, 200);
+ 	// add to viewport, not app.stage
+    viewport.addChild(car);
 
   	//Capture the keyboard arrow keys
   	let left = keyboard(37),
@@ -127,6 +132,7 @@ function play(delta) {
   car.angle = ( Math.atan2(car.vx, -car.vy) / Math.PI ) * 180;
   car.x += car.vx;
   car.y += car.vy;
+  viewport.moveCenter(car.x, car.y);
 
 }
 
